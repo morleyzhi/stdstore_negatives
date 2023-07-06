@@ -13,16 +13,14 @@ contract CounterTest is Test {
     }
 
     function testPositive() public {
-        stdstore.target(address(counter)).sig("getNumber()").checked_write(20);
-        assertEq(counter.getNumber(), 20, "Can set to positive number");
+        stdstore.target(address(counter)).sig("getNum()").checked_write(20);
+        assertEq(counter.getNum(), 20, "Can set to positive number");
     }
 
     function testNegative() public {
         // Build error:
         // Member "checked_write" not found or not visible after argument-dependent lookup in struct StdStorage storage pointer.
-        stdstore.target(address(counter)).sig("getNumber()").checked_write(
-            -2159
-        );
-        assertEq(counter.getNumber(), -2159, "Can set to negative number");
+        stdstore.target(address(counter)).sig("getNum()").checked_write(-2159);
+        assertEq(counter.getNum(), -2159, "Can set to negative number");
     }
 }
