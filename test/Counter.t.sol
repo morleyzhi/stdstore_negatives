@@ -5,20 +5,24 @@ import "forge-std/Test.sol";
 import "../src/Counter.sol";
 
 contract CounterTest is Test {
+    using stdStorage for StdStorage;
     Counter public counter;
 
     function setUp() public {
         counter = new Counter();
-        counter.setNumber(0);
     }
 
-    function testIncrement() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
+    function testPositive() public {
+        stdstore.target(address(counter)).sig("getNumber()").checked_write(20);
+        assertEq(counter.getNumber(), 20, "Can set to positive number");
     }
 
-    function testSetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
+    function testNegative() public {
+        // Build error:
+        // Member "checked_write" not found or not visible after argument-dependent lookup in struct StdStorage storage pointer.
+        stdstore.target(address(counter)).sig("getNumber()").checked_write(
+            -2159
+        );
+        assertEq(counter.getNumber(), -2159, "Can set to negative number");
     }
 }
