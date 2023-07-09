@@ -8,18 +8,28 @@ contract CounterTest is Test {
     using stdStorage for StdStorage;
     Counter public counter;
 
+    address _addrSubject = makeAddr("_addrSubject");
+    address _addrReceiver = makeAddr("_addrReceiver");
+
     function setUp() public {
         counter = new Counter();
     }
 
-    function testPositive() public {
-        stdstore.target(address(counter)).sig("getNum()").checked_write(20);
-        assertEq(counter.getNum(), 20, "Can set to positive number");
+    function testMinting() public {
+        vm.startPrank(_addrSubject);
+
+        counter.mint();
+        counter.safeTransferFrom(_addrSubject, _addrReceiver, 0, 1, "");
+        assertEq(counter.balanceOf(_addrSubject, 0), 0);
+        assertEq(counter.balanceOf(_addrReceiver, 0), 1);
+
+        vm.stopPrank();
     }
 
-    function testNegative() public {
-        // Build error:
-        // Member "checked_write" not found or not visible after argument-dependent lookup in struct StdStorage storage pointer.
+    function testPositiveAndNegative() public {
+        stdstore.target(address(counter)).sig("getNum()").checked_write(20);
+        assertEq(counter.getNum(), 20, "Can set to positive number");
+
         stdstore.target(address(counter)).sig("getNum()").checked_write(
             uint(int(-2159))
         );
