@@ -20,7 +20,9 @@ contract CounterTest is Test {
     function testNegative() public {
         // Build error:
         // Member "checked_write" not found or not visible after argument-dependent lookup in struct StdStorage storage pointer.
-        stdstore.target(address(counter)).sig("getNum()").checked_write(-2159);
+        stdstore.target(address(counter)).sig("getNum()").checked_write(
+            uint(int(-2159))
+        );
         assertEq(counter.getNum(), -2159, "Can set to negative number");
     }
 }
